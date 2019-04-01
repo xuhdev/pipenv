@@ -30,7 +30,9 @@ import crayons
 import parse
 
 from . import environments
-from .exceptions import PipenvUsageError, RequirementError, PipenvCmdError
+from .exceptions import (
+    PipenvUsageError, RequirementError, PipenvCmdError, ResolutionFailure
+)
 from .pep508checker import lookup
 from .vendor.urllib3 import util as urllib3_util
 
@@ -419,6 +421,7 @@ class Resolver(object):
     def get_deps_from_req(cls, req):
         # type: (Requirement) -> Tuple[Set[str], Dict[str, Dict[str, Union[str, bool, List[str]]]]]
         from requirementslib.models.utils import _requirement_to_str_lowercase_name
+        from requirementslib.utils import is_installable_dir
         constraints = set()  # type: Set[str]
         locked_deps = dict()  # type: Dict[str, Dict[str, Union[str, bool, List[str]]]]
         if req.is_file_or_url or req.is_vcs and not req.is_wheel:
@@ -437,7 +440,16 @@ class Resolver(object):
                 raise RequirementError(req=req)
             setup_info = req.req.setup_info
             locked_deps[pep423_name(name)] = entry
-            requirements = [v for v in getattr(setup_info, "requires", {}).values()]
+            requirements = []
+            # Allow users to toggle resolution off for non-editable VCS packages
+            # but leave it on for local, installable folders on the filesystem
+            if environments.PIPENV_RESOLVE_VCS or not (
+                req.editable or (
+                    req.is_file_or_url and parsed_line.is_local and
+                    is_installable_dir(parsed_line.path)
+                )
+            ):
+                requirements = [v for v in getattr(setup_info, "requires", {}).values()]
             for r in requirements:
                 if getattr(r, "url", None) and not getattr(r, "editable", False):
                     if r is not None:

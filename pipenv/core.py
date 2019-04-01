@@ -1388,6 +1388,8 @@ def pip_install(
             src_dir = os.environ["PIP_SRC"]
             src = ["--src", os.environ["PIP_SRC"]]
         if not requirement.editable:
+            # Leave this off becauase old lockfiles don't have all deps included
+            # TODO: When can it be turned back on?
             no_deps = False
 
         if src_dir is not None:
@@ -1441,7 +1443,7 @@ def pip_install(
         ignore_hashes = True if not requirement.hashes else ignore_hashes
         line = requirement.as_line(include_hashes=not ignore_hashes)
         line = "{0} {1}".format(line, " ".join(src))
-        if environments.is_verbose()
+        if environments.is_verbose():
             click.echo(
                 "Writing first requirement line to temporary file: {0!r}".format(line),
                 err=True
