@@ -234,7 +234,7 @@ Default is to lock dependencies and update ``Pipfile.lock`` on each run.
 NOTE: This only affects the ``install`` and ``uninstall`` commands.
 """
 
-PIPENV_RESOLVE_VCS = _is_env_truthy(os.environ.get("PIPENV_RESOLVE_VCS", True))
+PIPENV_RESOLVE_VCS = _is_env_truthy(os.environ.get("PIPENV_RESOLVE_VCS", 'true'))
 """Tells Pipenv whether to resolve all VCS dependencies in full.
 
 As of Pipenv 2018.11.26, only editable VCS dependencies were resolved in full.
