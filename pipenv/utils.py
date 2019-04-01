@@ -443,8 +443,8 @@ class Resolver(object):
             requirements = []
             # Allow users to toggle resolution off for non-editable VCS packages
             # but leave it on for local, installable folders on the filesystem
-            if environments.PIPENV_RESOLVE_VCS or not (
-                req.editable or (
+            if environments.PIPENV_RESOLVE_VCS or (
+                req.editable or parsed_line.is_wheel or (
                     req.is_file_or_url and parsed_line.is_local and
                     is_installable_dir(parsed_line.path)
                 )
