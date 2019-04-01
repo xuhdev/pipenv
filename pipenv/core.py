@@ -1638,7 +1638,6 @@ def system_which(command, mult=False):
     return result
 
 
-
 def format_help(help):
     """Formats the help string."""
     help = help.replace("Options:", str(crayons.normal("Options:", bold=True)))
