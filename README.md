@@ -45,6 +45,10 @@ Installation
 If you\'re on MacOS, you can install Pipenv easily with Homebrew:
 
     $ brew install pipenv
+    
+Or, if you\'re using Debian Buster+:
+
+    $ sudo apt install pipenv
 
 Or, if you\'re using Fedora 28:
 
